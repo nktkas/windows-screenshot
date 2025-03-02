@@ -491,7 +491,7 @@ export class ScreenCapture {
         }
 
         // Get window dimensions into the buffer
-        if (this.user32.symbols.GetWindowRect(hwnd, this.rect.ptr) === 0) {
+        if (!this.user32.symbols.GetWindowRect(hwnd, this.rect.ptr)) {
             throw new Error("Failed to get window dimensions");
         }
 
@@ -896,12 +896,12 @@ export class ScreenCapture {
 
             try {
                 // Copy screen content
-                if (this.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, this.SRCCOPY) === 0) {
+                if (!this.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, this.SRCCOPY)) {
                     throw new Error("Failed to copy screen data");
                 }
 
                 // Get the image data
-                if (this.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0) === 0) {
+                if (!this.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0)) {
                     throw new Error("Failed to get bitmap data");
                 }
 
@@ -982,12 +982,12 @@ export class ScreenCapture {
 
             try {
                 // Copy window content
-                if (this.user32.symbols.PrintWindow(hwnd, hdcMemory, 2) === 0) {
+                if (!this.user32.symbols.PrintWindow(hwnd, hdcMemory, 2)) {
                     throw new Error("Failed to copy window content");
                 }
 
                 // Get the image data
-                if (this.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0) === 0) {
+                if (!this.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0)) {
                     throw new Error("Failed to get bitmap data");
                 }
 
