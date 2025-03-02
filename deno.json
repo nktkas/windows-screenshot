@@ -1,0 +1,17 @@
+{
+    "name": "@nktkas/windows-screenshot",
+    "version": "0.1.0",
+    "exports": "./mod.ts",
+    "fmt": {
+        "indentWidth": 4,
+        "lineWidth": 120
+    },
+    "publish": {
+        "exclude": [
+            ".github",
+            "benchmarks"
+        ]
+    },
+    "license": "MIT",
+    "lock": false
+}
