@@ -4,8 +4,8 @@
 export interface ScreenCaptureOptions {
     /** Maximum number of BMP structures to keep in cache (default: 20) */
     maxBmpCacheSize?: number;
-    /** Maximum number of window dimensions to keep in cache (default: 20) */
-    maxWindowDimensionsCacheSize?: number;
+    /** Maximum number of window position to keep in cache (default: 20) */
+    maxWindowPositionCacheSize?: number;
     /** Maximum number of device contexts, bitmaps, and dimensions to keep in cache (default: 20) */
     maxContextCacheSize?: number;
 }
@@ -71,21 +71,15 @@ export interface WindowDimensions {
  * Window coordinates in pixels
  */
 export interface WindowPosition {
-    /** Left coordinate */
+    /** Left coordinate (with scale factor) */
     left: number;
-    /** Top coordinate */
+    /** Top coordinate (with scale factor) */
     top: number;
-    /** Right coordinate */
+    /** Right coordinate (with scale factor) */
     right: number;
-    /** Bottom coordinate */
+    /** Bottom coordinate (with scale factor) */
     bottom: number;
-}
-
-/**
- * Window DPI and scale factor
- */
-interface WindowDPI {
-    dpi: number;
+    /** Window DPI scale factor */
     scaleFactor: number;
 }
 
@@ -98,11 +92,6 @@ interface GDIContext {
     /** Bitmap handle */
     hBitmap: Deno.PointerObject;
 }
-
-/**
- * Combined window dimensional information
- */
-type WindowDimensionalInfo = WindowDimensions & WindowPosition & WindowDPI;
 
 /**
  * A generic Least Recently Used (LRU) cache implementation
@@ -282,7 +271,6 @@ export class ScreenCapture {
 
     // FFI library handles
 
-    /** Deno FFI handle for user32.dll */
     private readonly user32 = Deno.dlopen("user32.dll", {
         GetDesktopWindow: { parameters: [], result: "pointer" },
         GetWindowRect: { parameters: ["pointer", "pointer"], result: "i32" },
@@ -297,7 +285,6 @@ export class ScreenCapture {
         GetDpiForWindow: { parameters: ["pointer"], result: "u32" },
         PrintWindow: { parameters: ["pointer", "pointer", "u32"], result: "i32" },
     });
-    /** Deno FFI handle for gdi32.dll */
     private readonly gdi32 = Deno.dlopen("gdi32.dll", {
         CreateCompatibleDC: { parameters: ["pointer"], result: "pointer" },
         CreateCompatibleBitmap: { parameters: ["pointer", "i32", "i32"], result: "pointer" },
@@ -317,8 +304,8 @@ export class ScreenCapture {
     private screenDimensions: WindowDimensions | null = null;
     /** Cached RECT structure for GetWindowRect */
     private readonly rect: { buffer: Uint8Array; ptr: Deno.PointerValue };
-    /** Cache map for window dimensions */
-    private windowDimensionsCache: LRUCache<bigint, WindowDimensionalInfo>;
+    /** Cache map for window position */
+    private windowPositionCache: LRUCache<bigint, WindowPosition>;
     /** Cache map for BMP structures by dimension */
     private bmpCache: LRUCache<string, BMPStructure>;
     /** Cache map for device context, bitmap, and dimensions */
@@ -435,8 +422,8 @@ export class ScreenCapture {
      */
     constructor(options: ScreenCaptureOptions = {}) {
         // Initialize LRU caches with specified maximum sizes
-        this.windowDimensionsCache = new LRUCache<bigint, WindowDimensionalInfo>(
-            options.maxWindowDimensionsCacheSize ?? 20,
+        this.windowPositionCache = new LRUCache<bigint, WindowPosition>(
+            options.maxWindowPositionCacheSize ?? 20,
         );
         this.bmpCache = new LRUCache<string, BMPStructure>(
             options.maxBmpCacheSize ?? 20,
@@ -469,33 +456,30 @@ export class ScreenCapture {
     // —————————— Private Methods ——————————
 
     /**
-     * Retrieves window dimensions from its handle
+     * Retrieves window position from its handle
      * @param hwnd Window handle
-     * @param forceRefresh Bypass cache and get fresh dimensions (default: true)
-     * @returns Window dimensions, position, DPI, and scale factor
-     * @throws Error if unable to get window dimensions
+     * @param forceRefresh Bypass cache and get fresh position (default: true)
+     * @returns Window position and scale factor
+     * @throws Error if unable to get window position
      */
-    private getWindowDimensions(
-        hwnd: Deno.PointerObject,
-        forceRefresh = true,
-    ): WindowDimensions & WindowPosition & WindowDPI {
+    private getWindowPosition(hwnd: Deno.PointerObject, forceRefresh = true): WindowPosition {
         // Create a unique key for this window handle
         const handleKey = Deno.UnsafePointer.value(hwnd);
 
-        // Return cached dimensions if available and refresh not forced
+        // Return cached position if available and refresh not forced
         if (!forceRefresh) {
-            const cachedDimensions = this.windowDimensionsCache.get(handleKey);
-            if (cachedDimensions) {
-                return cachedDimensions;
+            const cachedPosition = this.windowPositionCache.get(handleKey);
+            if (cachedPosition) {
+                return cachedPosition;
             }
         }
 
-        // Get window dimensions into the buffer
+        // Get window position into the buffer
         if (!this.user32.symbols.GetWindowRect(hwnd, this.rect.ptr)) {
-            throw new Error("Failed to get window dimensions");
+            throw new Error("Failed to get window position");
         }
 
-        // Read dimensions from the buffer
+        // Read position from the buffer
         const dataView = new DataView(this.rect.buffer.buffer);
         const left = dataView.getInt32(0, true);
         const top = dataView.getInt32(4, true);
@@ -504,24 +488,24 @@ export class ScreenCapture {
 
         // Get DPI and scale factor
         const dpi = this.user32.symbols.GetDpiForWindow(hwnd);
-        const scaleFactor = dpi !== 0 ? (dpi / 96) : 1;
+        if (dpi === 0) {
+            throw new Error("Failed to get DPI for window");
+        }
+        const scaleFactor = dpi / 96;
 
-        // Create dimensions object
-        const dimensions = {
-            left,
-            top,
-            right,
-            bottom,
-            dpi,
+        // Create position object
+        const position = {
+            left: Math.ceil(left * scaleFactor),
+            top: Math.ceil(top * scaleFactor),
+            right: Math.ceil(right * scaleFactor),
+            bottom: Math.ceil(bottom * scaleFactor),
             scaleFactor,
-            width: Math.ceil((right - left) * scaleFactor),
-            height: Math.ceil((bottom - top) * scaleFactor),
         };
 
-        // Cache the dimensions for future use
-        this.windowDimensionsCache.set(handleKey, dimensions);
+        // Cache the position for future use
+        this.windowPositionCache.set(handleKey, position);
 
-        return dimensions;
+        return position;
     }
 
     /**
@@ -823,7 +807,7 @@ export class ScreenCapture {
                 }
 
                 // Get window position
-                const position = this.getWindowDimensions(hwnd);
+                const position = this.getWindowPosition(hwnd);
 
                 // Calculate dimensions
                 const dimensions = {
@@ -919,7 +903,7 @@ export class ScreenCapture {
     /**
      * Captures a specific window identified by className, processId, or handle
      * @param identifier Window className, processId, or handle to capture
-     * @param forceRefresh Force refresh of cached dimensions (default: true)
+     * @param forceRefresh Force refresh of cached position (default: true)
      * @returns Raw BMP image data
      * @throws Error if window not found or capture fails
      * @example
@@ -958,8 +942,10 @@ export class ScreenCapture {
             hwnd = identifier;
         }
 
-        // Get window dimensions
-        const { width, height } = this.getWindowDimensions(hwnd, forceRefresh);
+        // Get window position and dimensions
+        const { left, top, right, bottom } = this.getWindowPosition(hwnd, forceRefresh);
+        const width = right - left;
+        const height = bottom - top;
 
         // Create the BMP data structure
         const { bmpData, bmiPtr, pixelsPtr } = this.getOrCreateBmpStructure(width, height);
@@ -1009,7 +995,7 @@ export class ScreenCapture {
     public close(): void {
         // Cleanup all caches
         this.contextCache.clear();
-        this.windowDimensionsCache.clear();
+        this.windowPositionCache.clear();
         this.bmpCache.clear();
 
         // Close FFI handles
