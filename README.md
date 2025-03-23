@@ -182,3 +182,5 @@ getWindowList          335.2 µs         2,983 (283.4 µs …   3.3 ms) 326.2 µ
 
 [`@nktkas/keyboard-hook`](https://github.com/nktkas/keyboard-hook) - Windows keyboard listening for Deno with zero
 dependencies.
+
+[`@nktkas/mouse-hook`](https://github.com/nktkas/mouse-hook) - Windows mouse listening for Deno with zero dependencies.
