@@ -9,6 +9,8 @@ Windows screen capture for Deno with zero dependencies.
 ### Screen
 
 ```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
 const capture = new ScreenCapture();
 
 // Capture entire screen
@@ -21,6 +23,8 @@ const region = await capture.captureScreen({ left: 100, top: 100, right: 500, bo
 ### Window
 
 ```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
 const capture = new ScreenCapture();
 
 // Capture a specific window by class name, process id, or ffi handle
@@ -34,6 +38,8 @@ const handleBmp = await capture.captureWindow(windowHandle);
 After you have finished working with the ScreenCapture instance, you must clear the FFI resources
 
 ```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
 const capture = new ScreenCapture();
 
 // any operations
