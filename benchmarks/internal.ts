@@ -20,121 +20,25 @@ const pidPtr = Deno.UnsafePointer.of(new Uint32Array(1));
 
 // —————————— Class private methods ——————————
 
-Deno.bench("createBmpStructure - 800x600", { group: "createBmpStructure" }, () => {
+Deno.bench("createBitmapBuffers - 800x600", { group: "createBitmapBuffers" }, () => {
     // @ts-ignore - Accessing private method
-    capture.createBmpStructure(800, 600);
+    capture.createBitmapBuffers(800, 600);
 });
-Deno.bench("createBmpStructure - 1280x720", { group: "createBmpStructure" }, () => {
+Deno.bench("createBitmapBuffers - 1280x720", { group: "createBitmapBuffers" }, () => {
     // @ts-ignore - Accessing private method
-    capture.createBmpStructure(1280, 720);
+    capture.createBitmapBuffers(1280, 720);
 });
-Deno.bench("createBmpStructure - 1920x1080", { group: "createBmpStructure" }, () => {
+Deno.bench("createBitmapBuffers - 1920x1080", { group: "createBitmapBuffers" }, () => {
     // @ts-ignore - Accessing private method
-    capture.createBmpStructure(1920, 1080);
+    capture.createBitmapBuffers(1920, 1080);
 });
-Deno.bench("createBmpStructure - 2560x1440", { group: "createBmpStructure" }, () => {
+Deno.bench("createBitmapBuffers - 2560x1440", { group: "createBitmapBuffers" }, () => {
     // @ts-ignore - Accessing private method
-    capture.createBmpStructure(2560, 1440);
+    capture.createBitmapBuffers(2560, 1440);
 });
-Deno.bench("createBmpStructure - 3840x2160", { group: "createBmpStructure" }, () => {
+Deno.bench("createBitmapBuffers - 3840x2160", { group: "createBitmapBuffers" }, () => {
     // @ts-ignore - Accessing private method
-    capture.createBmpStructure(3840, 2160);
-});
-
-Deno.bench("createGdiRenderContext - 800x600", { group: "createGdiRenderContext" }, (t) => {
-    const width = 800;
-    const height = 600;
-
-    // @ts-ignore - Accessing private field
-    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
-
-    t.start();
-    // @ts-ignore - Accessing private method
-    const context = capture.createGdiRenderContext(hdcWindow, width, height);
-    t.end();
-
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteObject(context.hBitmap);
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteDC(context.hdcMemory);
-    // @ts-ignore - Accessing private field
-    capture.user32.symbols.ReleaseDC(null, hdcWindow);
-});
-Deno.bench("createGdiRenderContext - 1280x720", { group: "createGdiRenderContext" }, (t) => {
-    const width = 1280;
-    const height = 720;
-
-    // @ts-ignore - Accessing private field
-    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
-
-    t.start();
-    // @ts-ignore - Accessing private method
-    const context = capture.createGdiRenderContext(hdcWindow, width, height);
-    t.end();
-
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteObject(context.hBitmap);
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteDC(context.hdcMemory);
-    // @ts-ignore - Accessing private field
-    capture.user32.symbols.ReleaseDC(null, hdcWindow);
-});
-Deno.bench("createGdiRenderContext - 1920x1080", { group: "createGdiRenderContext" }, (t) => {
-    const width = 1920;
-    const height = 1080;
-
-    // @ts-ignore - Accessing private field
-    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
-
-    t.start();
-    // @ts-ignore - Accessing private method
-    const context = capture.createGdiRenderContext(hdcWindow, width, height);
-    t.end();
-
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteObject(context.hBitmap);
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteDC(context.hdcMemory);
-    // @ts-ignore - Accessing private field
-    capture.user32.symbols.ReleaseDC(null, hdcWindow);
-});
-Deno.bench("createGdiRenderContext - 2560x1440", { group: "createGdiRenderContext" }, (t) => {
-    const width = 2560;
-    const height = 1440;
-
-    // @ts-ignore - Accessing private field
-    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
-
-    t.start();
-    // @ts-ignore - Accessing private method
-    const context = capture.createGdiRenderContext(hdcWindow, width, height);
-    t.end();
-
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteObject(context.hBitmap);
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteDC(context.hdcMemory);
-    // @ts-ignore - Accessing private field
-    capture.user32.symbols.ReleaseDC(null, hdcWindow);
-});
-Deno.bench("createGdiRenderContext - 3840x2160", { group: "createGdiRenderContext" }, (t) => {
-    const width = 3840;
-    const height = 2160;
-
-    // @ts-ignore - Accessing private field
-    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
-
-    t.start();
-    // @ts-ignore - Accessing private method
-    const context = capture.createGdiRenderContext(hdcWindow, width, height);
-    t.end();
-
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteObject(context.hBitmap);
-    // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.DeleteDC(context.hdcMemory);
-    // @ts-ignore - Accessing private field
-    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+    capture.createBitmapBuffers(3840, 2160);
 });
 
 Deno.bench("findWindow - by class name", { group: "findWindow" }, () => {
@@ -154,6 +58,142 @@ Deno.bench("findWindow - non-existent process id", { group: "findWindow" }, () =
     capture.findWindow(9999999);
 });
 
+Deno.bench("drawCursorOnDC - 800x600", { group: "drawCursorOnDC" }, (t) => {
+    const width = 800;
+    const height = 600;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+
+    t.start();
+    // @ts-ignore - Accessing private method
+    capture.drawCursorOnDC(hdcMemory, 0, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteDC(hdcMemory);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("drawCursorOnDC - 1280x720", { group: "drawCursorOnDC" }, (t) => {
+    const width = 1280;
+    const height = 720;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+
+    t.start();
+    // @ts-ignore - Accessing private method
+    capture.drawCursorOnDC(hdcMemory, 0, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteDC(hdcMemory);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("drawCursorOnDC - 1920x1080", { group: "drawCursorOnDC" }, (t) => {
+    const width = 1920;
+    const height = 1080;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+
+    t.start();
+    // @ts-ignore - Accessing private method
+    capture.drawCursorOnDC(hdcMemory, 0, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteDC(hdcMemory);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("drawCursorOnDC - 2560x1440", { group: "drawCursorOnDC" }, (t) => {
+    const width = 2560;
+    const height = 1440;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+
+    t.start();
+    // @ts-ignore - Accessing private method
+    capture.drawCursorOnDC(hdcMemory, 0, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteDC(hdcMemory);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("drawCursorOnDC - 3840x2160", { group: "drawCursorOnDC" }, (t) => {
+    const width = 3840;
+    const height = 2160;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+
+    t.start();
+    // @ts-ignore - Accessing private method
+    capture.drawCursorOnDC(hdcMemory, 0, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteDC(hdcMemory);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+
 // —————————— Direct FFI calls ——————————
 
 Deno.bench("GetWindowRect", { group: "user32" }, () => {
@@ -163,19 +203,19 @@ Deno.bench("GetWindowRect", { group: "user32" }, () => {
 Deno.bench("GetDCEx", { group: "user32" }, (t) => {
     t.start();
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
     t.end();
 
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("ReleaseDC", { group: "user32" }, (t) => {
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
     t.end();
 });
 Deno.bench("FindWindowExW", { group: "user32" }, () => {
@@ -200,7 +240,7 @@ Deno.bench("GetWindowThreadProcessId", { group: "user32" }, () => {
 });
 Deno.bench("GetWindowLongW", { group: "user32" }, () => {
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.GetWindowLongW(testWindow.handle, ScreenCapture.GWL_STYLE);
+    capture.user32.symbols.GetWindowLongW(testWindow.handle, -16);
 });
 Deno.bench("GetDpiForWindow", { group: "user32" }, () => {
     // @ts-ignore - Accessing private fields
@@ -212,8 +252,12 @@ Deno.bench("PrintWindow", { group: "user32" }, async (t) => {
 
     // @ts-ignore - Accessing private fields
     const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -221,16 +265,78 @@ Deno.bench("PrintWindow", { group: "user32" }, async (t) => {
     t.end();
 
     // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
+    // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
     capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
 });
+Deno.bench("GetCursorInfo", { group: "user32" }, (t) => {
+    const cursorInfoBuffer = new Uint8Array(24);
+    const cursorInfoDataView = new DataView(cursorInfoBuffer.buffer);
+    cursorInfoDataView.setUint32(0, 24, true);
+    const cursorInfoPtr = Deno.UnsafePointer.of(cursorInfoBuffer);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.GetCursorInfo(cursorInfoPtr);
+    t.end();
+});
+Deno.bench("GetIconInfo", { group: "user32" }, (t) => {
+    const cursorInfoBuffer = new Uint8Array(24);
+    const cursorInfoDataView = new DataView(cursorInfoBuffer.buffer);
+    cursorInfoDataView.setUint32(0, 24, true);
+    const cursorInfoPtr = Deno.UnsafePointer.of(cursorInfoBuffer);
+
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.GetCursorInfo(cursorInfoPtr);
+
+    const hCursor = Deno.UnsafePointer.create(cursorInfoDataView.getBigUint64(8, true));
+
+    const iconInfoBuffer = new Uint8Array(32);
+    const iconInfoPtr = Deno.UnsafePointer.of(iconInfoBuffer);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.GetIconInfo(hCursor, iconInfoPtr);
+    t.end();
+});
+Deno.bench("DrawIconEx", { group: "user32" }, (t) => {
+    const cursorInfoBuffer = new Uint8Array(24);
+    const cursorInfoDataView = new DataView(cursorInfoBuffer.buffer);
+    cursorInfoDataView.setUint32(0, 24, true);
+    const cursorInfoPtr = Deno.UnsafePointer.of(cursorInfoBuffer);
+
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.GetCursorInfo(cursorInfoPtr);
+
+    const hCursor = Deno.UnsafePointer.create(cursorInfoDataView.getBigUint64(8, true));
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.DrawIconEx(hdcWindow, 0, 0, hCursor, 0, 0, 0, null, 0x0003);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("GetDpiForSystem", { group: "user32" }, () => {
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.GetDpiForSystem();
+});
+Deno.bench("SetProcessDPIAware", { group: "user32" }, () => {
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.SetProcessDPIAware();
+});
 
 Deno.bench("CreateCompatibleDC", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -240,14 +346,14 @@ Deno.bench("CreateCompatibleDC", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("CreateCompatibleBitmap", { group: "gdi32" }, (t) => {
     const width = 800;
     const height = 600;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -257,11 +363,11 @@ Deno.bench("CreateCompatibleBitmap", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("SelectObject", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
     // @ts-ignore - Accessing private fields
     const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
     // @ts-ignore - Accessing private fields
@@ -269,40 +375,52 @@ Deno.bench("SelectObject", { group: "gdi32" }, (t) => {
 
     t.start();
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("BitBlt", { group: "gdi32" }, async (t) => {
     const width = 800;
     const height = 600;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("DeleteObject", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
     // @ts-ignore - Accessing private fields
     const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, 800, 600);
 
@@ -312,11 +430,11 @@ Deno.bench("DeleteObject", { group: "gdi32" }, (t) => {
     t.end();
 
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("DeleteDC", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000001 | 0x00000002);
     // @ts-ignore - Accessing private fields
     const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
 
@@ -326,40 +444,41 @@ Deno.bench("DeleteDC", { group: "gdi32" }, (t) => {
     t.end();
 
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("GetDIBits", { group: "gdi32" }, async (t) => {
     const width = 800;
     const height = 600;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
-    // @ts-ignore - Accessing private method
-    const bmpStructure = capture.createBmpStructure(width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    // @ts-ignore - Accessing private fields
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
+    const pixelsPtr = Deno.UnsafePointer.create(pBits[0]);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.GetDIBits(
-        hdcMemory,
-        hBitmap,
-        0,
-        height,
-        bmpStructure.pixelsPtr,
-        bmpStructure.bmiPtr,
-        0,
-    );
+    await capture.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("GetDeviceCaps", { group: "gdi32" }, (t) => {
     // @ts-ignore - Accessing private constants
@@ -367,11 +486,32 @@ Deno.bench("GetDeviceCaps", { group: "gdi32" }, (t) => {
 
     t.start();
     // @ts-ignore - Accessing private constants
-    capture.gdi32.symbols.GetDeviceCaps(hdcScreen, ScreenCapture.DESKTOP_HORZRES);
+    capture.gdi32.symbols.GetDeviceCaps(hdcScreen, 118);
     t.end();
 
     // @ts-ignore - Accessing private constants
     capture.user32.symbols.ReleaseDC(null, hdcScreen);
+});
+Deno.bench("CreateDIBSection", { group: "gdi32" }, (t) => {
+    const width = 800;
+    const height = 600;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcWindow, bmiPtr, 0, pBitsPtr, null, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 
 Deno.bench("BitBlt - 1280x720", { group: "BitBlt" }, async (t) => {
@@ -379,84 +519,124 @@ Deno.bench("BitBlt - 1280x720", { group: "BitBlt" }, async (t) => {
     const height = 720;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("BitBlt - 1920x1080", { group: "BitBlt" }, async (t) => {
     const width = 1920;
     const height = 1080;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("BitBlt - 2560x1440", { group: "BitBlt" }, async (t) => {
     const width = 2560;
     const height = 1440;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("BitBlt - 3840x2160", { group: "BitBlt" }, async (t) => {
     const width = 3840;
     const height = 2160;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 
 Deno.bench("GetDIBits - 1280x720", { group: "GetDIBits" }, async (t) => {
@@ -464,132 +644,136 @@ Deno.bench("GetDIBits - 1280x720", { group: "GetDIBits" }, async (t) => {
     const height = 720;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
-    // @ts-ignore - Accessing private method
-    const bmpStructure = capture.createBmpStructure(width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    // @ts-ignore - Accessing private fields
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
+    const pixelsPtr = Deno.UnsafePointer.create(pBits[0]);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.GetDIBits(
-        hdcMemory,
-        hBitmap,
-        0,
-        height,
-        bmpStructure.pixelsPtr,
-        bmpStructure.bmiPtr,
-        0,
-    );
+    await capture.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("GetDIBits - 1920x1080", { group: "GetDIBits" }, async (t) => {
     const width = 1920;
     const height = 1080;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
-    // @ts-ignore - Accessing private method
-    const bmpStructure = capture.createBmpStructure(width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    // @ts-ignore - Accessing private fields
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
+    const pixelsPtr = Deno.UnsafePointer.create(pBits[0]);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.GetDIBits(
-        hdcMemory,
-        hBitmap,
-        0,
-        height,
-        bmpStructure.pixelsPtr,
-        bmpStructure.bmiPtr,
-        0,
-    );
+    await capture.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("GetDIBits - 2560x1440", { group: "GetDIBits" }, async (t) => {
     const width = 2560;
     const height = 1440;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
-    // @ts-ignore - Accessing private method
-    const bmpStructure = capture.createBmpStructure(width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    // @ts-ignore - Accessing private fields
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
+    const pixelsPtr = Deno.UnsafePointer.create(pBits[0]);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.GetDIBits(
-        hdcMemory,
-        hBitmap,
-        0,
-        height,
-        bmpStructure.pixelsPtr,
-        bmpStructure.bmiPtr,
-        0,
-    );
+    await capture.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("GetDIBits - 3840x2160", { group: "GetDIBits" }, async (t) => {
     const width = 3840;
     const height = 2160;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
-    // @ts-ignore - Accessing private method
-    const bmpStructure = capture.createBmpStructure(width, height);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
     // @ts-ignore - Accessing private fields
-    capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, ScreenCapture.SRCCOPY);
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcMemory, bmiPtr, 0, pBitsPtr, null, 0);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
+    // @ts-ignore - Accessing private fields
+    await capture.gdi32.symbols.BitBlt(hdcMemory, 0, 0, width, height, hdcWindow, 0, 0, 0x00CC0020 | 0x40000000);
+    const pixelsPtr = Deno.UnsafePointer.create(pBits[0]);
 
     t.start();
     // @ts-ignore - Accessing private fields
-    await capture.gdi32.symbols.GetDIBits(
-        hdcMemory,
-        hBitmap,
-        0,
-        height,
-        bmpStructure.pixelsPtr,
-        bmpStructure.bmiPtr,
-        0,
-    );
+    await capture.gdi32.symbols.GetDIBits(hdcMemory, hBitmap, 0, height, pixelsPtr, bmiPtr, 0);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteDC(hdcMemory);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 
 Deno.bench("PrintWindow - 1280x720", { group: "PrintWindow" }, async (t) => {
@@ -598,14 +782,20 @@ Deno.bench("PrintWindow - 1280x720", { group: "PrintWindow" }, async (t) => {
 
     // @ts-ignore - Accessing private fields
     const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
     await capture.user32.symbols.PrintWindow(testWindow.handle, hdcMemory, 2);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
@@ -619,14 +809,20 @@ Deno.bench("PrintWindow - 1920x1080", { group: "PrintWindow" }, async (t) => {
 
     // @ts-ignore - Accessing private fields
     const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
     await capture.user32.symbols.PrintWindow(testWindow.handle, hdcMemory, 2);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
@@ -640,14 +836,20 @@ Deno.bench("PrintWindow - 2560x1440", { group: "PrintWindow" }, async (t) => {
 
     // @ts-ignore - Accessing private fields
     const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
     await capture.user32.symbols.PrintWindow(testWindow.handle, hdcMemory, 2);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
@@ -661,14 +863,20 @@ Deno.bench("PrintWindow - 3840x2160", { group: "PrintWindow" }, async (t) => {
 
     // @ts-ignore - Accessing private fields
     const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
-    // @ts-ignore - Accessing private fields and methods
-    const { hdcMemory, hBitmap } = capture.createGdiRenderContext(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hdcMemory = capture.gdi32.symbols.CreateCompatibleDC(hdcWindow);
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateCompatibleBitmap(hdcWindow, width, height);
+    // @ts-ignore - Accessing private fields
+    const hOldBitmap = capture.gdi32.symbols.SelectObject(hdcMemory, hBitmap);
 
     t.start();
     // @ts-ignore - Accessing private fields
     await capture.user32.symbols.PrintWindow(testWindow.handle, hdcMemory, 2);
     t.end();
 
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.SelectObject(hdcMemory, hOldBitmap);
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
@@ -682,7 +890,7 @@ Deno.bench("CreateCompatibleBitmap - 1280x720", { group: "CreateCompatibleBitmap
     const height = 720;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -692,14 +900,14 @@ Deno.bench("CreateCompatibleBitmap - 1280x720", { group: "CreateCompatibleBitmap
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("CreateCompatibleBitmap - 1920x1080", { group: "CreateCompatibleBitmap" }, (t) => {
     const width = 1920;
     const height = 1080;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -709,14 +917,14 @@ Deno.bench("CreateCompatibleBitmap - 1920x1080", { group: "CreateCompatibleBitma
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("CreateCompatibleBitmap - 2560x1440", { group: "CreateCompatibleBitmap" }, (t) => {
     const width = 2560;
     const height = 1440;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -726,14 +934,14 @@ Deno.bench("CreateCompatibleBitmap - 2560x1440", { group: "CreateCompatibleBitma
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
 Deno.bench("CreateCompatibleBitmap - 3840x2160", { group: "CreateCompatibleBitmap" }, (t) => {
     const width = 3840;
     const height = 2160;
 
     // @ts-ignore - Accessing private fields
-    const hdcWindow = capture.user32.symbols.GetDCEx(testWindow.handle, null, 0x00000001 | 0x00000002);
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
 
     t.start();
     // @ts-ignore - Accessing private fields
@@ -743,5 +951,90 @@ Deno.bench("CreateCompatibleBitmap - 3840x2160", { group: "CreateCompatibleBitma
     // @ts-ignore - Accessing private fields
     capture.gdi32.symbols.DeleteObject(hBitmap);
     // @ts-ignore - Accessing private fields
-    capture.user32.symbols.ReleaseDC(testWindow.handle, hdcWindow);
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+
+Deno.bench("CreateDIBSection - 1280x720", { group: "CreateDIBSection" }, (t) => {
+    const width = 1280;
+    const height = 720;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcWindow, bmiPtr, 0, pBitsPtr, null, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("CreateDIBSection - 1920x1080", { group: "CreateDIBSection" }, (t) => {
+    const width = 1920;
+    const height = 1080;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcWindow, bmiPtr, 0, pBitsPtr, null, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("CreateDIBSection - 2560x1440", { group: "CreateDIBSection" }, (t) => {
+    const width = 2560;
+    const height = 1440;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcWindow, bmiPtr, 0, pBitsPtr, null, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
+});
+Deno.bench("CreateDIBSection - 3840x2160", { group: "CreateDIBSection" }, (t) => {
+    const width = 3840;
+    const height = 2160;
+
+    // @ts-ignore - Accessing private fields
+    const hdcWindow = capture.user32.symbols.GetDCEx(null, null, 0x00000002);
+    // @ts-ignore - Accessing private fields
+    const { bmiPtr } = capture.createBitmapBuffers(width, height);
+    const pBits = new BigUint64Array(1);
+    const pBitsPtr = Deno.UnsafePointer.of(pBits);
+
+    t.start();
+    // @ts-ignore - Accessing private fields
+    const hBitmap = capture.gdi32.symbols.CreateDIBSection(hdcWindow, bmiPtr, 0, pBitsPtr, null, 0);
+    t.end();
+
+    // @ts-ignore - Accessing private fields
+    capture.gdi32.symbols.DeleteObject(hBitmap);
+    // @ts-ignore - Accessing private fields
+    capture.user32.symbols.ReleaseDC(null, hdcWindow);
 });
