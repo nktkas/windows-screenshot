@@ -6,7 +6,7 @@ Windows screen capture for Deno with zero dependencies.
 
 ## Usage example
 
-### Screen
+### Screenshot entire screen
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
@@ -14,23 +14,71 @@ import { ScreenCapture } from "@nktkas/windows-screenshot";
 const capture = new ScreenCapture();
 
 // Capture entire screen
-const fullScreen = await capture.captureScreen();
+const fullScreenBmp = await capture.captureScreen();
 
 // Capture region (100,100 to 500,400)
-const region = await capture.captureScreen({ left: 100, top: 100, right: 500, bottom: 400 });
+const regionBmp = await capture.captureScreen({ left: 100, top: 100, right: 500, bottom: 400 });
 ```
 
-### Window
+### Screenshot specific window
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
 
 const capture = new ScreenCapture();
 
-// Capture a specific window by class name, process id, or ffi handle
-const classNameBmp = await capture.captureWindow("Notepad");
-const processIdBmp = await capture.captureWindow(1234);
-const handleBmp = await capture.captureWindow(windowHandle);
+// Capture a specific window by title, class name, process id, or ffi handle
+const titleBmp = await capture.captureWindow({ title: "Untitled - Notepad" });
+const classNameBmp = await capture.captureWindow({ className: "Notepad" });
+const processIdBmp = await capture.captureWindow({ processId: 1234 });
+const handleBmp = await capture.captureWindow({ handle: windowHandle });
+```
+
+### Get the screen rectangle
+
+```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
+const capture = new ScreenCapture();
+const screenRect = capture.getScreenRect();
+
+// { left: 0, top: 0, right: 1920, bottom: 1080 }
+```
+
+### Get rectangle of a specific window
+
+```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
+const capture = new ScreenCapture();
+const windowRect = capture.getWindowRect({ title: "Untitled - Notepad" }); // or className, processId, or handle
+
+// { left: 100, top: 100, right: 500, bottom: 400 }
+```
+
+### Get a list of all visible windows
+
+```ts
+import { ScreenCapture } from "@nktkas/windows-screenshot";
+
+const capture = new ScreenCapture();
+const windows = capture.getWindowList();
+
+// [
+//   {
+//     handle: {},
+//     title: "...",
+//     className: "...",
+//     processId: 1234,
+//     position: { left: 100, top: 100, right: 500, bottom: 400 },
+//     style: {
+//       isMinimized: true,
+//       isMaximized: false,
+//       isDisabled: false,
+//     },
+//   },
+//   ...
+// ]
 ```
 
 ### Cleanup
@@ -50,36 +98,38 @@ capture.close();
 ## API
 
 ```ts
-/** The RECT structure defines a rectangle by the coordinates of its upper-left and lower-right corners */
-export interface Rect {
-    /** Specifies the x-coordinate of the upper-left corner of the rectangle */
+/** Options for the ScreenCapture class */
+interface ScreenCaptureOptions {
+    /** The bit depth of the image to capture. Defaults to 24 bit. */
+    bitDepth?: BitDepth;
+    /** The type of palette to use for 8-bit color depth. Defaults to "halftone". */
+    paletteType?: PaletteType;
+    /** Whether to include the cursor in the screenshot. Defaults to true. */
+    includeCursor?: boolean;
+}
+
+/** The RECT structure defines a rectangle by the coordinates of its upper-left and lower-right corners. */
+interface Rect {
+    /** Specifies the x-coordinate of the upper-left corner of the rectangle. */
     left: number;
-    /** Specifies the y-coordinate of the upper-left corner of the rectangle */
+    /** Specifies the y-coordinate of the upper-left corner of the rectangle. */
     top: number;
-    /** Specifies the x-coordinate of the lower-right corner of the rectangle */
+    /** Specifies the x-coordinate of the lower-right corner of the rectangle. */
     right: number;
-    /** Specifies the y-coordinate of the lower-right corner of the rectangle */
+    /** Specifies the y-coordinate of the lower-right corner of the rectangle. */
     bottom: number;
 }
 
-/** The SIZE structure defines the width and height of a rectangle. */
-export interface Size {
-    /** Specifies the rectangle's width (in pixels). */
-    cx: number;
-    /** Specifies the rectangle's height (in pixels). */
-    cy: number;
-}
-
 /** Comprehensive information about a window */
-export interface WindowInfo {
+interface WindowInfo {
+    /** Handle to the window for use with FFI functions */
+    handle: Deno.PointerObject;
     /** Title of the window */
     title: string;
     /** Class name of the window */
     className: string;
     /** Process ID of the window */
     processId: number;
-    /** Handle to the window for use with FFI functions */
-    handle: Deno.PointerObject;
     /** Position of the window on the screen */
     position: Rect;
     /** Style information of the window */
@@ -93,34 +143,47 @@ export interface WindowInfo {
     };
 }
 
+/** A unique identifier for a window */
+type WindowIdentifier =
+    | { title: string }
+    | { className: string }
+    | { processId: number }
+    | { handle: Deno.PointerObject };
+
+/** Bit depth of the image */
+type BitDepth = 1 | 4 | 8 | 16 | 24 | 32;
+
+/** Type of palette to use for 8-bit color depth */
+type PaletteType = "grayscale" | "halftone";
+
 /** A class for capturing screenshots and window images in Windows */
-export class ScreenCapture {
+class ScreenCapture implements Disposable {
     /**
      * Captures the entire screen or a specified portion as a bitmap image
      * @param rect Optional rectangle specifying the area to capture
      * @returns Raw BMP image data
      */
-    async captureScreen(rect: Partial<Rect> = {}): Promise<Uint8Array>;
+    async captureScreen(rect?: Partial<Rect>): Promise<Uint8Array>;
 
     /**
      * Captures a specific window identified by class name, process id, or ffi handle
-     * @param identifier Window class name, process id, or ffi handle to capture
+     * @param identifier Window identifier
      * @returns Raw BMP image data
      */
-    async captureWindow(identifier: string | number | Deno.PointerObject): Promise<Uint8Array>;
+    async captureWindow(identifier: WindowIdentifier): Promise<Uint8Array>;
 
     /**
-     * Gets the screen size
-     * @returns Size object with cx (width) and cy (height) properties
+     * Gets the screen rectangle
+     * @returns Rectangle object with left, top, right, and bottom coordinates
      */
-    getScreenSize(): Size;
+    getScreenRect(): Rect;
 
     /**
      * Gets the rectangle of a specified window
-     * @param identifier Window class name, process ID, or handle to get the rectangle for
+     * @param identifier Window identifier
      * @returns Rectangle object with left, top, right, and bottom coordinates
      */
-    getWindowRect(identifier: string | number | Deno.PointerObject): Rect;
+    getWindowRect(identifier: WindowIdentifier): Rect;
 
     /**
      * Gets a list of all visible windows
@@ -131,6 +194,25 @@ export class ScreenCapture {
     /** Closes the FFI handles */
     close(): void;
 }
+
+/** A representation of a RGB image */
+interface RGBImage {
+    /** Width of the image in pixels */
+    width: number;
+    /** Height of the image in pixels */
+    height: number;
+    /** Number of channels in the image */
+    channels: 3 | 4;
+    /** Raw RGB data */
+    data: Uint8Array;
+}
+
+/**
+ * Converts a BMP to an RGB image
+ * @param bmp - The BMP array to convert
+ * @returns An object with the width, height, channels, and raw RGB data
+ */
+function bmpToRgb(bmp: Uint8Array): RGBImage;
 ```
 
 ## Benchmarks
@@ -139,53 +221,36 @@ export class ScreenCapture {
 deno bench --allow-ffi .\benchmarks\public.ts
 ```
 
-### 1920x1080
+> **Note:** Incomplete benchmark provided
 
 ```
     CPU | AMD Ryzen 9 7950X
-Runtime | Deno 2.2.4 (x86_64-pc-windows-msvc)
+Runtime | Deno 2.2.10 (x86_64-pc-windows-msvc)
 
 benchmark       time/iter (avg)        iter/s      (min … max)           p75      p99     p995
 --------------- ----------------------------- --------------------- --------------------------
-captureScreen           12.9 ms          77.5 ( 10.8 ms …  16.6 ms)  12.9 ms  16.6 ms  16.6 ms
-captureWindow            4.2 ms         238.3 (  3.6 ms …   6.6 ms)   4.3 ms   6.4 ms   6.6 ms
-getScreenSize            4.1 µs       243,000 (  4.0 µs …   4.5 µs)   4.1 µs   4.5 µs   4.5 µs
-getWindowRect            1.4 µs       702,600 (  1.2 µs …   2.6 µs)   1.4 µs   2.6 µs   2.6 µs
-getWindowList          327.3 µs         3,055 (283.2 µs …   3.7 ms) 321.8 µs 776.7 µs 951.3 µs
-```
+captureScreen_24bit_1920x1080          12.5 ms          80.2 ( 10.3 ms …  14.9 ms)  12.7 ms  14.9 ms  14.9 ms
+bmpToRgb_24bit_screen_1920x1080         8.5 ms         118.2 (  8.2 ms …  11.9 ms)   8.3 ms  11.9 ms  11.9 ms
 
-### 2560x1440
+captureScreen_24bit_2560x1440          18.0 ms          55.6 ( 16.0 ms …  22.3 ms)  19.4 ms  22.3 ms  22.3 ms
+bmpToRgb_24bit_screen_2560x1440        15.0 ms          66.9 ( 14.4 ms …  18.5 ms)  14.7 ms  18.5 ms  18.5 ms
 
-```
-    CPU | AMD Ryzen 9 7950X
-Runtime | Deno 2.2.4 (x86_64-pc-windows-msvc)
+captureScreen_24bit_5120x1440          33.4 ms          30.0 ( 30.7 ms …  35.9 ms)  34.3 ms  35.9 ms  35.9 ms
+bmpToRgb_24bit_screen_5120x1440        29.9 ms          33.5 ( 29.1 ms …  36.5 ms)  29.5 ms  36.5 ms  36.5 ms
 
-benchmark       time/iter (avg)        iter/s      (min … max)           p75      p99     p995
---------------- ----------------------------- --------------------- --------------------------
-captureScreen           21.4 ms          46.7 ( 18.7 ms …  27.9 ms)  22.1 ms  27.9 ms  27.9 ms
-captureWindow            4.2 ms         239.8 (  3.7 ms …   4.6 ms)   4.3 ms   4.6 ms   4.6 ms
-getScreenSize            4.2 µs       240,500 (  4.1 µs …   4.5 µs)   4.2 µs   4.5 µs   4.5 µs
-getWindowRect            1.4 µs       711,300 (  1.2 µs …   2.7 µs)   1.4 µs   2.7 µs   2.7 µs
-getWindowList          327.9 µs         3,050 (281.5 µs …   3.7 ms) 321.4 µs 860.6 µs   1.0 ms
-```
+captureWindow_24bit_minsize_notepad     4.2 ms         238.6 (  3.7 ms …   6.8 ms)   4.2 ms   5.7 ms   6.8 ms
+bmpToRgb_24bit_window_minsize_notepad  39.0 µs        25,640 ( 27.2 µs …   1.4 ms)  38.5 µs  66.6 µs  87.6 µs
 
-### 5120x1440
-
-```
-    CPU | AMD Ryzen 9 7950X
-Runtime | Deno 2.2.4 (x86_64-pc-windows-msvc)
-
-benchmark       time/iter (avg)        iter/s      (min … max)           p75      p99     p995
---------------- ----------------------------- --------------------- --------------------------
-captureScreen           38.3 ms          26.1 ( 35.6 ms …  43.3 ms)  39.3 ms  43.3 ms  43.3 ms
-captureWindow            4.2 ms         240.1 (  3.6 ms …   5.1 ms)   4.2 ms   4.7 ms   5.1 ms
-getScreenSize            4.2 µs       238,000 (  4.1 µs …   5.0 µs)   4.2 µs   5.0 µs   5.0 µs
-getWindowRect            1.4 µs       740,300 (  1.1 µs …   2.4 µs)   1.4 µs   2.4 µs   2.4 µs
-getWindowList          335.2 µs         2,983 (283.4 µs …   3.3 ms) 326.2 µs 905.6 µs   1.2 ms
+new ScreenCapture                       1.8 ms         565.5 (  1.7 ms …   4.8 ms)   1.8 ms   1.9 ms   2.3 ms
+getScreenRect                           4.4 µs       228,000 (  4.1 µs …   5.4 µs)   4.5 µs   5.4 µs   5.4 µs
+getWindowRect                           1.5 µs       683,600 (  1.2 µs …   2.8 µs)   1.5 µs   2.8 µs   2.8 µs
+getWindowList                         448.5 µs         2,230 (389.3 µs …   4.2 ms) 442.1 µs 885.0 µs   1.0 ms
 ```
 
 ## Related
 
-[`@nktkas/keyboard-hook`](https://github.com/nktkas/keyboard-hook) - Global Windows keyboard listener for Deno with zero dependencies.
+[`@nktkas/keyboard-hook`](https://github.com/nktkas/keyboard-hook) - Global Windows keyboard listener for Deno with zero
+dependencies.
 
-[`@nktkas/mouse-hook`](https://github.com/nktkas/mouse-hook) - Global Windows mouse listener for Deno with zero dependencies.
+[`@nktkas/mouse-hook`](https://github.com/nktkas/mouse-hook) - Global Windows mouse listener for Deno with zero
+dependencies.
