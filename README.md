@@ -10,7 +10,6 @@ Windows screen capture for Deno with zero dependencies.
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
-
 const capture = new ScreenCapture();
 
 // Capture entire screen
@@ -24,7 +23,6 @@ const regionBmp = await capture.captureScreen({ left: 100, top: 100, right: 500,
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
-
 const capture = new ScreenCapture();
 
 // Capture a specific window by title, class name, process id, or ffi handle
@@ -38,10 +36,9 @@ const handleBmp = await capture.captureWindow({ handle: windowHandle });
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
-
 const capture = new ScreenCapture();
-const screenRect = capture.getScreenRect();
 
+const screenRect = capture.getScreenRect();
 // { left: 0, top: 0, right: 1920, bottom: 1080 }
 ```
 
@@ -49,10 +46,9 @@ const screenRect = capture.getScreenRect();
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
-
 const capture = new ScreenCapture();
-const windowRect = capture.getWindowRect({ title: "Untitled - Notepad" }); // or className, processId, or handle
 
+const windowRect = capture.getWindowRect({ title: "Untitled - Notepad" }); // or className, processId, or handle
 // { left: 100, top: 100, right: 500, bottom: 400 }
 ```
 
@@ -60,10 +56,9 @@ const windowRect = capture.getWindowRect({ title: "Untitled - Notepad" }); // or
 
 ```ts
 import { ScreenCapture } from "@nktkas/windows-screenshot";
-
 const capture = new ScreenCapture();
-const windows = capture.getWindowList();
 
+const windows = capture.getWindowList();
 // [
 //   {
 //     handle: {},
